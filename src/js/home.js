@@ -46,10 +46,6 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
   );
   console.log(actionList, dramaList, animationList);
 
-  const $actionContainer = document.querySelector("#action");
-  const $dramaContainer = document.getElementById("drama");
-  const $animationContainer = document.getElementById("animation");
-
   function videoItemTemplate(movie) {
     return `<div class="primaryPlaylistItem">
 				<div class="primaryPlaylistItem-image">
@@ -61,12 +57,19 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
 			</div>`;
   }
   // console.log(videoItemTemplate("src/images/cover/bictoin.jpg", "Bitcoin"));
+  const $actionContainer = document.querySelector("#action");
 
   actionList.data.movies.forEach(movie => {
     // debugger;
     const HTMLString = videoItemTemplate(movie);
+    const html = document.implementation.createHTMLDocument();
+    html.body.innerHTML = HTMLString;
+    $actionContainer.append(html.body.children[0]);
     console.log(HTMLString);
   });
+
+  const $dramaContainer = document.getElementById("drama");
+  const $animationContainer = document.getElementById("animation");
 
   const $featuringContainer = document.getElementById("feauring");
   const $form = document.getElementById("form");
@@ -100,5 +103,5 @@ En jQuery
 			'</h4>'
 		'</div'
 
-En JS (ver linea 53)
+En JS (ver linea 49)
 */
