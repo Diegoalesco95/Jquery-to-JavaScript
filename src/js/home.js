@@ -44,7 +44,28 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
   const animationList = await getData(
     "https://yts.mx/api/v2/list_movies.json?genre=animation"
   );
-  console.log(actionList);
-  console.log(dramaList);
-  console.log(animationList);
+  console.log(actionList, dramaList, animationList);
+
+  const $actionContainer = document.querySelector("#action");
+  const $dramaContainer = document.getElementById("drama");
+  const $animationContainer = document.getElementById("animation");
+
+  const $featuringContainer = document.getElementById("feauring");
+  const $form = document.getElementById("form");
+  const $home = document.getElementById("home");
+
+  const $modal = document.getElementById("modal");
+  const $overlay = document.getElementById("overlay");
+  const $hideModal = document.getElementById("hide-modal");
+
+  const $modalTitle = $modal.querySelector("h1");
+  const $modalImage = $modal.querySelector("img");
+  const $modalDescription = $modal.querySelector("p");
 })();
+
+/* Selectores
+En jQuery
+const $home = $(".home .list #item");
+
+En JavaScript
+const $home = document.getElementById("modal"); */
