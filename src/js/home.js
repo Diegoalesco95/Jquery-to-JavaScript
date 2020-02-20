@@ -50,6 +50,24 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
   const $dramaContainer = document.getElementById("drama");
   const $animationContainer = document.getElementById("animation");
 
+  function videoItemTemplate(movie) {
+    return `<div class="primaryPlaylistItem">
+				<div class="primaryPlaylistItem-image">
+					<img src="${movie.medium_cover_image}" />
+				</div>
+				<h4 class="primaryPlaylistItem-title">
+					${movie.title}
+				</h4>
+			</div>`;
+  }
+  // console.log(videoItemTemplate("src/images/cover/bictoin.jpg", "Bitcoin"));
+
+  actionList.data.movies.forEach(movie => {
+    // debugger;
+    const HTMLString = videoItemTemplate(movie);
+    console.log(HTMLString);
+  });
+
   const $featuringContainer = document.getElementById("feauring");
   const $form = document.getElementById("form");
   const $home = document.getElementById("home");
@@ -69,3 +87,18 @@ const $home = $(".home .list #item");
 
 En JavaScript
 const $home = document.getElementById("modal"); */
+
+/*  Creacion de Templates
+En jQuery
+	
+	'<div class="primaryPlaylistItem">' +
+			'<div class="primaryPlaylistItem-image">' +
+				'<img src='+imageSRC+' />' +
+			'</div>'
+			'<h4 class="primaryPlaylistItem-title">'
+				'Titulo de la peli'
+			'</h4>'
+		'</div'
+
+En JS (ver linea 53)
+*/
