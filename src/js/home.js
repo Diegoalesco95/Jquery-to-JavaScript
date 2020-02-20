@@ -56,20 +56,29 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
 				</h4>
 			</div>`;
   }
-  // console.log(videoItemTemplate("src/images/cover/bictoin.jpg", "Bitcoin"));
-  const $actionContainer = document.querySelector("#action");
 
-  actionList.data.movies.forEach(movie => {
-    // debugger;
-    const HTMLString = videoItemTemplate(movie);
+  function creatTeamplate(HTMLString) {
     const html = document.implementation.createHTMLDocument();
     html.body.innerHTML = HTMLString;
-    $actionContainer.append(html.body.children[0]);
-    console.log(HTMLString);
-  });
+    return html.body.children[0];
+  }
 
+  function renderMovieList(list, $container) {
+    // actionList.data.movies
+    $container.children[0].remove();
+    list.forEach(movie => {
+      const HTMLString = videoItemTemplate(movie);
+      const movieElement = creatTeamplate(HTMLString);
+      $container.append(movieElement);
+    });
+  }
+
+  const $actionContainer = document.querySelector("#action");
+  renderMovieList(actionList.data.movies, $actionContainer);
   const $dramaContainer = document.getElementById("drama");
+  renderMovieList(dramaList.data.movies, $dramaContainer);
   const $animationContainer = document.getElementById("animation");
+  renderMovieList(animationList.data.movies, $animationContainer);
 
   const $featuringContainer = document.getElementById("feauring");
   const $form = document.getElementById("form");
