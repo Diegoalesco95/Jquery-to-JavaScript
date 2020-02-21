@@ -11,7 +11,7 @@
 }); */
 
 // XMLHttpRequest
-fetch("https://randomuser.me/api/") // Retorna una promesa
+/* fetch("https://randomuser.me/api/") // Retorna una promesa
   .then(function(response) {
     // console.log(response);
     return response.json();
@@ -21,7 +21,7 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
   })
   .catch(function() {
     console.log("Algo Falló");
-  });
+  }); */
 
 // Funciones Asíncronas
 
@@ -218,18 +218,21 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
   const {
     data: { movies: actionList }
   } = await getData(`${BASE_API}list_movies.json?genre=action`);
+  window.localStorage.setItem("actionList", JSON.stringify(actionList));
   const $actionContainer = document.querySelector("#action");
   renderMovieList(actionList, $actionContainer, "action");
 
   const {
     data: { movies: dramaList }
   } = await getData(`${BASE_API}list_movies.json?genre=drama`);
+  window.localStorage.setItem("dramaList", JSON.stringify(dramaList));
   const $dramaContainer = document.getElementById("drama");
   renderMovieList(dramaList, $dramaContainer, "drama");
 
   const {
     data: { movies: animationList }
   } = await getData(`${BASE_API}list_movies.json?genre=animation`);
+  window.localStorage.setItem("animationList", JSON.stringify(animationList));
   const $animationContainer = document.getElementById("animation");
   renderMovieList(animationList, $animationContainer, "animation");
 
