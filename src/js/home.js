@@ -39,10 +39,23 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
   const $home = document.getElementById("home");
   const $featuringContainer = document.getElementById("featuring");
 
+  function setAttributes($element, attributes) {
+    for (const attribute in attributes) {
+      $element.setAttribute(attribute, attributes[attribute]);
+    }
+  }
+
   $form.addEventListener("submit", event => {
     event.preventDefault();
     $home.classList.add("search-active");
     $featuringContainer.style.display = "grid";
+    const $loader = document.createElement("img");
+    setAttributes($loader, {
+      src: "src/images/loader.gif",
+      height: 50,
+      width: 50
+    });
+    $featuringContainer.append($loader);
   });
 
   const actionList = await getData(
