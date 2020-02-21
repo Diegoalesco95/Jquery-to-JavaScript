@@ -35,6 +35,12 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
     const data = await response.json();
     return data;
   }
+  const $form = document.getElementById("form");
+
+  $form.addEventListener("submit", event => {
+    event.preventDefault();
+  });
+
   const actionList = await getData(
     "https://yts.mx/api/v2/list_movies.json?genre=action"
   );
@@ -62,6 +68,11 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
     html.body.innerHTML = HTMLString;
     return html.body.children[0];
   }
+  function addEventClick($element) {
+    $element.addEventListener("click", () => {
+      alert("click");
+    });
+  }
 
   function renderMovieList(list, $container) {
     // actionList.data.movies
@@ -70,6 +81,7 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
       const HTMLString = videoItemTemplate(movie);
       const movieElement = creatTeamplate(HTMLString);
       $container.append(movieElement);
+      addEventClick(movieElement);
     });
   }
 
@@ -80,8 +92,8 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
   const $animationContainer = document.getElementById("animation");
   renderMovieList(animationList.data.movies, $animationContainer);
 
-  const $featuringContainer = document.getElementById("feauring");
-  const $form = document.getElementById("form");
+  const $featuringContainer = document.getElementById("featuring");
+
   const $home = document.getElementById("home");
 
   const $modal = document.getElementById("modal");
