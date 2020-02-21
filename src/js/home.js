@@ -26,14 +26,13 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
 // Funciones Asíncronas
 
 (async function load() {
-  // await
-  // action
-  // drama
-  // animation
   async function getData(url) {
     const response = await fetch(url);
     const data = await response.json();
-    return data;
+    if (data.data.movie_count > 0) {
+      return data;
+    }
+    throw new Error("No se encontró ningun resultado");
   }
   const $form = document.getElementById("form");
   const $home = document.getElementById("home");
@@ -79,25 +78,20 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
     $featuringContainer.append($loader);
 
     const data = new FormData($form);
-    const {
-      data: { movies: pelis }
-    } = await getData(
-      `${BASE_API}list_movies.json?limit=1&query_term=${data.get("name")}`
-    );
-    const HTMLString = featuringTemplate(pelis[0]);
-    $featuringContainer.innerHTML = HTMLString;
+    try {
+      const {
+        data: { movies: pelis }
+      } = await getData(
+        `${BASE_API}list_movies.json?limit=1&query_term=${data.get("name")}`
+      );
+      const HTMLString = featuringTemplate(pelis[0]);
+      $featuringContainer.innerHTML = HTMLString;
+    } catch (error) {
+      alert(error.message);
+      $loader.remove();
+      $home.classList.remove("search-active");
+    }
   });
-
-  function videoItemTemplate(movie, category) {
-    return `<div class="primaryPlaylistItem" data-id="${movie.id}" data-category="${category}">
-				<div class="primaryPlaylistItem-image">
-					<img src="${movie.medium_cover_image}" />
-				</div>
-				<h4 class="primaryPlaylistItem-title">
-					${movie.title}
-				</h4>
-			</div>`;
-  }
 
   function creatTeamplate(HTMLString) {
     const html = document.implementation.createHTMLDocument();
@@ -110,6 +104,100 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
       // alert("click");
       showModal($element);
     });
+  }
+
+  // *********************Seccion MyPlaylist+++++++++++++++++++
+
+  function myPlaylistTemplate(url, title) {
+    return `<li class="myPlaylist-item">
+    <a href= ${url} >
+      <span>
+        ${title}
+      </span>
+    </a>
+  </li>`;
+  }
+
+  let getDataMovie = async url => {
+    const response = await fetch(url);
+    if (response.status != 404) {
+      const data = await response.json();
+      return data;
+    }
+    throw new Error("No se pueden traer peliculas");
+  };
+
+  $containerMyPlaylist = document.getElementById("myPlaylist");
+  let url = `${BASE_API}list_movies.json?sort_by=seeds&limit=9`;
+  try {
+    const {
+      data: { movies: myPlaylist }
+    } = await getDataMovie(url);
+    renderPlayList(myPlaylist, $containerMyPlaylist);
+  } catch (error) {
+    console.log(error.message);
+  }
+
+  function renderPlayList(list, $container) {
+    list.forEach(element => {
+      const HTMLString = myPlaylistTemplate(element.url, element.title);
+      const createElement = creatTeamplate(HTMLString);
+      $container.append(createElement);
+    });
+  }
+
+  // *********************Seccion Friend Playlist+++++++++++++++++++
+  const $userContainer = document.getElementById("friends");
+  function userTemplate(firstName, lastName, picture) {
+    return `<li class="playlistFriends-item">
+                  <a href="#">
+                  <img src="${picture}" alt="echame la culpa" />
+                  <span>
+                      ${firstName} ${lastName}
+                  </span>
+                  </a>
+              </li>`;
+  }
+
+  async function getDataUsers(url) {
+    const response = await fetch(url);
+    if (response.status != 404) {
+      const data = await response.json();
+      return data;
+    }
+    throw new Error("No se pueden traer usuarios");
+  }
+
+  function renderUserList(list, $container) {
+    list.forEach(element => {
+      const HTMLString = userTemplate(
+        element.name.first,
+        element.name.last,
+        element.picture.thumbnail
+      );
+      const userElement = creatTeamplate(HTMLString);
+      $container.append(userElement);
+    });
+  }
+  try {
+    const { results: userlist } = await getDataUsers(
+      "https://randomuser.me/api/?results=8"
+    );
+    renderUserList(userlist, $userContainer);
+  } catch (error) {
+    console.log(error.message);
+  }
+  // *********************Seccion Movies+++++++++++++++++++
+
+  function videoItemTemplate(movie, category) {
+    return `<div class="primaryPlaylistItem" data-id="${movie.id}" data-category="${category}">
+      <div class="primaryPlaylistItem-image">
+        <img src="${movie.medium_cover_image}" />
+      </div>
+      <h4 class="primaryPlaylistItem-title">
+        ${movie.title}
+      </h4>
+    </div>`;
   }
 
   function renderMovieList(list, $container, category) {
