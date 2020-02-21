@@ -36,9 +36,13 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
     return data;
   }
   const $form = document.getElementById("form");
+  const $home = document.getElementById("home");
+  const $featuringContainer = document.getElementById("featuring");
 
   $form.addEventListener("submit", event => {
     event.preventDefault();
+    $home.classList.add("search-active");
+    $featuringContainer.style.display = "grid";
   });
 
   const actionList = await getData(
@@ -68,9 +72,11 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
     html.body.innerHTML = HTMLString;
     return html.body.children[0];
   }
+
   function addEventClick($element) {
     $element.addEventListener("click", () => {
-      alert("click");
+      // alert("click");
+      showModal();
     });
   }
 
@@ -92,10 +98,6 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
   const $animationContainer = document.getElementById("animation");
   renderMovieList(animationList.data.movies, $animationContainer);
 
-  const $featuringContainer = document.getElementById("featuring");
-
-  const $home = document.getElementById("home");
-
   const $modal = document.getElementById("modal");
   const $overlay = document.getElementById("overlay");
   const $hideModal = document.getElementById("hide-modal");
@@ -103,6 +105,18 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
   const $modalTitle = $modal.querySelector("h1");
   const $modalImage = $modal.querySelector("img");
   const $modalDescription = $modal.querySelector("p");
+
+  function showModal() {
+    $overlay.classList.add("active");
+    $modal.style.animation = "modalIn .8s forwards";
+  }
+
+  $hideModal.addEventListener("click", hideModal);
+
+  function hideModal() {
+    $overlay.classList.remove("active");
+    $modal.style.animation = "modalOut .8s forwards";
+  }
 })();
 
 /* Selectores
