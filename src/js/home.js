@@ -95,8 +95,8 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
   );
   // console.log(actionList, dramaList, animationList);
 
-  function videoItemTemplate(movie) {
-    return `<div class="primaryPlaylistItem">
+  function videoItemTemplate(movie, category) {
+    return `<div class="primaryPlaylistItem" data-id="${movie.id}" data-category="${category}">
 				<div class="primaryPlaylistItem-image">
 					<img src="${movie.medium_cover_image}" />
 				</div>
@@ -115,15 +115,15 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
   function addEventClick($element) {
     $element.addEventListener("click", () => {
       // alert("click");
-      showModal();
+      showModal($element);
     });
   }
 
-  function renderMovieList(list, $container) {
+  function renderMovieList(list, $container, category) {
     // actionList.data.movies
     $container.children[0].remove();
     list.forEach(movie => {
-      const HTMLString = videoItemTemplate(movie);
+      const HTMLString = videoItemTemplate(movie, category);
       const movieElement = creatTeamplate(HTMLString);
       $container.append(movieElement);
       addEventClick(movieElement);
@@ -131,11 +131,11 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
   }
 
   const $actionContainer = document.querySelector("#action");
-  renderMovieList(actionList.data.movies, $actionContainer);
-  const $dramaContainer = document.getElementById("drama");
+  renderMovieList(actionList.data.movies, $actionContainer, "action");
+  const $dramaContainer = document.getElementById("drama", "drama");
   renderMovieList(dramaList.data.movies, $dramaContainer);
   const $animationContainer = document.getElementById("animation");
-  renderMovieList(animationList.data.movies, $animationContainer);
+  renderMovieList(animationList.data.movies, $animationContainer), "animation";
 
   const $modal = document.getElementById("modal");
   const $overlay = document.getElementById("overlay");
@@ -145,9 +145,11 @@ fetch("https://randomuser.me/api/") // Retorna una promesa
   const $modalImage = $modal.querySelector("img");
   const $modalDescription = $modal.querySelector("p");
 
-  function showModal() {
+  function showModal($element) {
     $overlay.classList.add("active");
     $modal.style.animation = "modalIn .8s forwards";
+    const id = $element.dataSet.id;
+    const category = $element.dataSet.category;
   }
 
   $hideModal.addEventListener("click", hideModal);
