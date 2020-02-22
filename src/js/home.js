@@ -107,6 +107,7 @@
   }
 
   // *********************Seccion MyPlaylist+++++++++++++++++++
+  $containerMyPlaylist = document.getElementById("myPlaylist");
 
   function myPlaylistTemplate(url, title) {
     return `<li class="myPlaylist-item">
@@ -118,6 +119,8 @@
   </li>`;
   }
 
+  let url = `${BASE_API}list_movies.json?sort_by=seeds&limit=9`;
+
   let getDataMovie = async url => {
     const response = await fetch(url);
     if (response.status != 404) {
@@ -126,14 +129,22 @@
     }
     throw new Error("No se pueden traer peliculas");
   };
-
-  $containerMyPlaylist = document.getElementById("myPlaylist");
-  let url = `${BASE_API}list_movies.json?sort_by=seeds&limit=9`;
-  try {
+  async function cacheExistPlayList(name) {
+    const cachePlayList = window.localStorage.getItem(`${name}`);
+    if (cachePlayList) {
+      return JSON.parse(cachePlayList);
+    }
     const {
-      data: { movies: myPlaylist }
+      data: { movies: myPlaylists }
     } = await getDataMovie(url);
+    window.localStorage.setItem(`${name}`, JSON.stringify(myPlaylists));
+    return myPlaylists;
+  }
+
+  try {
+    const myPlaylist = await cacheExistPlayList("playlist");
     renderPlayList(myPlaylist, $containerMyPlaylist);
+    $containerMyPlaylist.classList.add("fadeIn");
   } catch (error) {
     console.log(error.message);
   }
@@ -146,8 +157,9 @@
     });
   }
 
-  // *********************Seccion Friend Playlist+++++++++++++++++++
+  // *********************Seccion Friends Playlist+++++++++++++++++++
   const $userContainer = document.getElementById("friends");
+
   function userTemplate(firstName, lastName, picture) {
     return `<li class="playlistFriends-item">
                   <a href="#">
@@ -168,6 +180,26 @@
     throw new Error("No se pueden traer usuarios");
   }
 
+  async function cacheFriends(name) {
+    const cacheFriends = window.localStorage.getItem(`${name}`);
+    if (cacheFriends) {
+      return JSON.parse(cacheFriends);
+    }
+    const { results: userList } = await getDataUsers(
+      "https://randomuser.me/api/?results=8"
+    );
+    window.localStorage.setItem(`${name}`, JSON.stringify(userList));
+    return userList;
+  }
+
+  try {
+    const friends = await cacheFriends("friend");
+    renderUserList(friends, $userContainer);
+    $userContainer.classList.add("fadeIn");
+  } catch (error) {
+    console.log(error.message);
+  }
+
   function renderUserList(list, $container) {
     list.forEach(element => {
       const HTMLString = userTemplate(
@@ -178,14 +210,6 @@
       const userElement = creatTeamplate(HTMLString);
       $container.append(userElement);
     });
-  }
-  try {
-    const { results: userlist } = await getDataUsers(
-      "https://randomuser.me/api/?results=8"
-    );
-    renderUserList(userlist, $userContainer);
-  } catch (error) {
-    console.log(error.message);
   }
   // *********************Seccion Movies+++++++++++++++++++
 
@@ -215,24 +239,28 @@
     });
   }
 
-  const {
-    data: { movies: actionList }
-  } = await getData(`${BASE_API}list_movies.json?genre=action`);
-  window.localStorage.setItem("actionList", JSON.stringify(actionList));
+  async function cacheExist(category) {
+    const listName = `${category}List`;
+    const cacheList = window.localStorage.getItem(listName);
+    if (cacheList) {
+      return JSON.parse(cacheList);
+    }
+    const {
+      data: { movies: data }
+    } = await getData(`${BASE_API}list_movies.json?genre=${category}`);
+    window.localStorage.setItem(listName, JSON.stringify(data));
+    return data;
+  }
+
+  const actionList = await cacheExist("action");
   const $actionContainer = document.querySelector("#action");
   renderMovieList(actionList, $actionContainer, "action");
 
-  const {
-    data: { movies: dramaList }
-  } = await getData(`${BASE_API}list_movies.json?genre=drama`);
-  window.localStorage.setItem("dramaList", JSON.stringify(dramaList));
+  const dramaList = await cacheExist("drama");
   const $dramaContainer = document.getElementById("drama");
   renderMovieList(dramaList, $dramaContainer, "drama");
 
-  const {
-    data: { movies: animationList }
-  } = await getData(`${BASE_API}list_movies.json?genre=animation`);
-  window.localStorage.setItem("animationList", JSON.stringify(animationList));
+  const animationList = await cacheExist("animation");
   const $animationContainer = document.getElementById("animation");
   renderMovieList(animationList, $animationContainer, "animation");
 
